@@ -1,0 +1,11 @@
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.csprojAssemblyReference.cache
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormEmployee.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormFoodChoice.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormLogin.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormLoginManage.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormManage.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.Properties.Resources.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.ThongKeDoanhThu.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.csproj.GenerateResource.cache
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FoodManager.resources
+C:\Users\nguye\Desktop\Final_-Object-oriented-software-design_Group04\Group04_FinalProject\Group04_FinalProject\obj\Debug\Group04_FinalProject.FormCustomer.resources
