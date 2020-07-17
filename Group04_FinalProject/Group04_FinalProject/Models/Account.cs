@@ -24,9 +24,10 @@ namespace Group04_FinalProject.Models
         [MinLength(8)]
 
         public string Password { get; set; }
+
         [Required]
         [MaxLength(100)]
-        public string Openned { get; set; }
+        public DateTime Openned { get; set; }
 
         [Required]
         [MaxLength(100)]
