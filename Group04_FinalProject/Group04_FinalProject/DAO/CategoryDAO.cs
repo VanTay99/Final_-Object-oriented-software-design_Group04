@@ -1,14 +1,16 @@
 ﻿using Group04_FinalProject.DTO;
+using Group04_FinalProject.DTO.Builder;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Group04_FinalProject.DAO
 {
-    public class CategoryDAO
+    class CategoryDAO: TemplateDAO
     {
         private static CategoryDAO instance;
 
@@ -26,11 +28,14 @@ namespace Group04_FinalProject.DAO
 
             string query = "select * from FoodCategory";
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            ExecuteQuery(query);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
-                Category category = new Category(item);
+                Category category = new CategoryBuilder()
+                    .AddCategoryID((int)item["id"])
+                    .AddName(item["name"].ToString())
+                    .Build();
                 list.Add(category);
             }
 
@@ -43,17 +48,42 @@ namespace Group04_FinalProject.DAO
 
             string query = "select * from FoodCategory where id = " + id;
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            ExecuteQuery(query);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
-                category = new Category(item);
+                category = new CategoryBuilder()
+                    .AddCategoryID((int)item["id"])
+                    .AddName(item["name"].ToString())
+                    .Build();
                 return category;
             }
 
             return category;
         }
 
-        
+        public override void ExecuteQuerySql(string q)
+        {
+            if (adapter == null)
+            {
+                adapter = new SqlDataAdapter(objCommand);
+            }
+            objCommand.CommandText = q;
+            dataTable.Columns.Clear();
+            dataTable.Rows.Clear();
+            adapter.Fill(dataTable);
+        }
+        public override void ExecuteNonQuerySql(string q)
+        {
+            data = 0;
+            objCommand.CommandText = q;
+            data = objCommand.ExecuteNonQuery();
+        }
+        public override void ExecuteScalarSql(string q)
+        {
+            scalar = 0;
+            objCommand.CommandText = q;
+            scalar = objCommand.ExecuteScalar();
+        }
     }
 }

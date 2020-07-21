@@ -1,14 +1,16 @@
 ﻿using Group04_FinalProject.DTO;
+using Group04_FinalProject.DTO.Builder;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Group04_FinalProject.DAO
 {
-    public class FoodDAO
+    class FoodDAO : TemplateDAO
     {
         private static FoodDAO instance;
 
@@ -25,11 +27,16 @@ namespace Group04_FinalProject.DAO
 
             string query = "select * from Food where idCategory = " + id;
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            ExecuteQuery(query);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
-                Food food = new Food(item);
+                Food food = new FoodBuilder()
+                    .AddCategoryID((int)item["idcategory"])
+                    .AddFoodID((int)item["id"])
+                    .AddName(item["name"].ToString())
+                    .AddPrice((float)Convert.ToDouble(item["price"].ToString()))
+                    .Build();
                 list.Add(food);
             }
 
@@ -42,11 +49,16 @@ namespace Group04_FinalProject.DAO
 
             string query = "select * from Food";
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            ExecuteQuery(query);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
-                Food food = new Food(item);
+                Food food = new FoodBuilder()
+                    .AddCategoryID((int)item["idcategory"])
+                    .AddFoodID((int)item["id"])
+                    .AddName(item["name"].ToString())
+                    .AddPrice((float)Convert.ToDouble(item["price"].ToString()))
+                    .Build();
                 list.Add(food);
             }
 
@@ -55,17 +67,17 @@ namespace Group04_FinalProject.DAO
         public bool InsertFood(string name, int id, float price)
         {
             string query = string.Format("INSERT dbo.Food ( name, idCategory, price )VALUES  ( N'{0}', {1}, {2})", name, id, price);
-            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            ExecuteNonQuery(query);
 
-            return result > 0;
+            return data > 0;
         }
 
         public bool UpdateFood(int idFood, string name, int id, float price)
         {
             string query = string.Format("UPDATE dbo.Food SET name = N'{0}', idCategory = {1}, price = {2} WHERE id = {3}", name, id, price, idFood);
-            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            ExecuteNonQuery(query);
 
-            return result > 0;
+            return data > 0;
         }
 
         public bool DeleteFood(int idFood)
@@ -73,9 +85,9 @@ namespace Group04_FinalProject.DAO
             BillInfoDAO.Instance.DeleteBillInfoByFoodID(idFood);
 
             string query = string.Format("Delete Food where id = {0}", idFood);
-            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            ExecuteNonQuery(query);
 
-            return result > 0;
+            return data > 0;
         }
 
         public List<Food> SearchFoodByName(string name)
@@ -85,15 +97,39 @@ namespace Group04_FinalProject.DAO
 
             string query = string.Format("SELECT * FROM dbo.Food WHERE dbo.fuConvertToUnsign1(name) LIKE N'%' + dbo.fuConvertToUnsign1(N'{0}') + '%'", name);
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            ExecuteQuery(query);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
                 Food food = new Food(item);
                 list.Add(food);
             }
 
             return list;
+        }
+
+        public override void ExecuteQuerySql(string q)
+        {
+            if (adapter == null)
+            {
+                adapter = new SqlDataAdapter(objCommand);
+            }
+            objCommand.CommandText = q;
+            dataTable.Columns.Clear();
+            dataTable.Rows.Clear();
+            adapter.Fill(dataTable);
+        }
+        public override void ExecuteNonQuerySql(string q)
+        {
+            data = 0;
+            objCommand.CommandText = q;
+            data = objCommand.ExecuteNonQuery();
+        }
+        public override void ExecuteScalarSql(string q)
+        {
+            scalar = 0;
+            objCommand.CommandText = q;
+            scalar = objCommand.ExecuteScalar();
         }
     }
 }

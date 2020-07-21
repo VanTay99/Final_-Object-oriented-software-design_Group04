@@ -1,14 +1,16 @@
 ﻿using Group04_FinalProject.DTO;
+using Group04_FinalProject.DTO.Builder;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Group04_FinalProject.DAO
 {
-    public class BillInfoDAO
+    class BillInfoDAO : TemplateDAO
     {
         private static BillInfoDAO instance;
 
@@ -21,18 +23,23 @@ namespace Group04_FinalProject.DAO
         private BillInfoDAO() { }
         public void DeleteBillInfoByFoodID(int id)
         {
-            DataProvider.Instance.ExecuteQuery("delete dbo.BillInfo WHERE idFood = " + id);
+            ExecuteQuery("delete dbo.BillInfo WHERE idFood = " + id);
         }
 
         public List<BillInfo> GetListBillInfo(int id)
         {
             List<BillInfo> listBillInfo = new List<BillInfo>();
 
-            DataTable data = DataProvider.Instance.ExecuteQuery("SELECT * FROM dbo.BillInfo WHERE idBill = " + id);
+            ExecuteQuery("SELECT * FROM dbo.BillInfo WHERE idBill = " + id);
 
-            foreach (DataRow item in data.Rows)
+            foreach (DataRow item in dataTable.Rows)
             {
-                BillInfo info = new BillInfo(item);
+                BillInfo info = new BillInfoBuilder()
+                    .AddBillID((int)item["idbill"])
+                    .AddCount((int)item["count"])
+                    .AddID((int)item["id"])
+                    .AddFoodID((int)item["idfood"])
+                    .Build();
                 listBillInfo.Add(info);
             }
 
@@ -40,7 +47,32 @@ namespace Group04_FinalProject.DAO
         }
         public void InsertBillInfo(int idBill, int idFood, int count)
         {
-            DataProvider.Instance.ExecuteNonQuery("USP_InsertBillInfo @idBill , @idFood , @count", new object[] { idBill, idFood, count });
+            string query = string.Format("USP_InsertBillInfo N'{0}' , N'{1}' ,N'{2}'", idBill, idFood, count);
+            ExecuteNonQuery(query);
+        }
+
+        public override void ExecuteQuerySql(string q)
+        {
+            if (adapter == null)
+            {
+                adapter = new SqlDataAdapter(objCommand);
+            }
+            objCommand.CommandText = q;
+            dataTable.Columns.Clear();
+            dataTable.Rows.Clear();
+            adapter.Fill(dataTable);
+        }
+        public override void ExecuteNonQuerySql(string q)
+        {
+            data = 0;
+            objCommand.CommandText = q;
+            data = objCommand.ExecuteNonQuery();
+        }
+        public override void ExecuteScalarSql(string q)
+        {
+            scalar = 0;
+            objCommand.CommandText = q;
+            scalar = objCommand.ExecuteScalar();
         }
     }
 }
